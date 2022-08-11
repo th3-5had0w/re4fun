@@ -11,7 +11,6 @@ from time import time as t
 import os
 import sys
 
-rax = 0
 lic = b''
 
 class StringBuffer:
@@ -60,8 +59,6 @@ ql = Qiling(['./keygen_me'], '../rootfs/x8664_linux/', verbose=QL_VERBOSE.OFF)
 base = int(ql.profile.get("OS64", "load_address"), 16)
 
 
-var = 1000
-
 def evade_fork(ql):
     rbp = ql.arch.regs.rbp
     ql.mem.write(rbp-0x1160, crc_str)
@@ -69,11 +66,7 @@ def evade_fork(ql):
 
 def get_val(ql):
     global lic
-    global var
     lic+=str(ql.arch.regs.read("EAX")).encode('utf-8')
-    print(type(ql.arch.regs.read("EAX")))
-    print(type(33))
-    var = 0
     log.info('License generated: '+lic.decode())
 
 def terminate(ql):
@@ -88,5 +81,3 @@ ql.hook_address(get_val, base+0x1a57)
 ql.hook_address(terminate, base+0x1eb4)
 ql.os.stdin.write(str(time).encode('utf-8')+b'-ZXXXXXXXXXXXXXXXX-'+b'1000\n')
 ql.run()
-print(lic.decode())
-print(var)
